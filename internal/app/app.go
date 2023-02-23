@@ -30,14 +30,14 @@ func Run() {
 	
 	rpc.Register(my_service)
 
-    // Creating a listener on a local machine on port 1234
-	listener, err := net.Listen("tcp", ":1234")
+    // Creating a listener on a local machine on port 8080
+	listener, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatal("ListenTCP error:", err)
 	}
     defer listener.Close()
 
-    log.Println("The server is running, listening to port 1234...")
+    log.Println("The server is running, listening to port 8080...")
 
     // Infinite loop for processing incoming connections
 	for {
