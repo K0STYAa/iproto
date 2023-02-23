@@ -2,8 +2,8 @@ package internal
 
 import "sync"
 
-type Service struct {
+type BaseStorage struct {
     Data      		[1000]string
-    StorageState 	int
+    StorageState 	uint8
     Mutex        	sync.RWMutex
 }

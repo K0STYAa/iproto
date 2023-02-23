@@ -1,10 +1,5 @@
 package models
 
-type Packet interface {
-    MarshalMsgPack() ([]byte, error)
-    UnmarshalMsgPack([]byte) error
-}
-
 type Header struct {
     FuncID     uint32
     BodyLength uint32

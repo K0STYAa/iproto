@@ -6,11 +6,28 @@ import (
 	"net/rpc"
 
 	"github.com/K0STYAa/vk_iproto/internal"
+	"github.com/K0STYAa/vk_iproto/internal/delivery"
+	"github.com/K0STYAa/vk_iproto/internal/repository"
+	"github.com/K0STYAa/vk_iproto/internal/service"
 	"github.com/K0STYAa/vk_iproto/pkg/models"
 )
 
+type MyService struct {
+	delivery *delivery.Delivery
+}
+func (ms *MyService) MainHandler(req models.Request, reply *models.Response) error {
+	*reply = ms.delivery.MainHandler(req)
+	return nil
+}
+
 func Run() {
-	my_service := new(internal.Service)
+	my_storage := new(internal.BaseStorage)
+
+	repos := repository.NewRepository(my_storage)
+	service := service.NewService(repos)
+	delivery := delivery.NewDelivery(*service)
+	my_service := &MyService{delivery: delivery}
+	
 	rpc.Register(my_service)
 
     // Creating a listener on a local machine on port 1234
@@ -29,9 +46,6 @@ func Run() {
 			continue
 		}
 
-		go func() {
-            serverCodec := models.GetServerCodec(conn)
-			rpc.ServeCodec(serverCodec)
-		}()
+		go rpc.ServeConn(conn)
 	}
 }
