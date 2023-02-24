@@ -89,10 +89,11 @@ func main() {
 
 	}
 
-	var resp models.Response
 
 	// Act
 	for i, testCase := range testTable {
+
+		var resp models.Response
 
 		req_body, _ := msgpack.Marshal(testCase.req)
 		testCase_resp_bytes, _ := msgpack.Marshal(testCase.resp)
@@ -115,10 +116,10 @@ func main() {
 		log.Printf("Calling %x(%v), result %v\n", testCase.foo, testCase.req, body_resp)
 
 		// Assert
-		if bytes.Compare(resp.Body, testCase_resp_bytes) != 0 {
-			log.Printf("Incorrect result. Expected %v, got %s", 
+		if body_resp != nil && bytes.Compare(resp.Body, testCase_resp_bytes) != 0 ||
+			body_resp == nil && testCase.resp != body_resp {
+			log.Printf("Incorrect result. Expected %v, got %v", 
 			testCase.resp, body_resp)
 		}
 	}
 }
-
