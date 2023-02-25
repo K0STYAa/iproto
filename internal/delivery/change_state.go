@@ -9,7 +9,10 @@ import (
 
 func ADM_STORAGE_SWITCH_READONLY(d *Delivery, body []byte) ([]byte, error) {
 	var unmarshal_body interface{}
-	msgpack.Unmarshal(body, &unmarshal_body)
+	err := msgpack.Unmarshal(body, &unmarshal_body)
+	if err != nil {
+		return nil, errors.New("Incorrect Unmarshal")
+    }
 	if unmarshal_body != nil {
 		return nil, errors.New("Incorrect body for function ADM_STORAGE_SWITCH_READONLY")
 	}
@@ -20,7 +23,10 @@ func ADM_STORAGE_SWITCH_READONLY(d *Delivery, body []byte) ([]byte, error) {
 
 func ADM_STORAGE_SWITCH_READWRITE(d *Delivery, body []byte) ([]byte, error) {
 	var unmarshal_body interface{}
-	msgpack.Unmarshal(body, &unmarshal_body)
+	err := msgpack.Unmarshal(body, &unmarshal_body)
+	if err != nil {
+		return nil, errors.New("Incorrect Unmarshal")
+    }
 	if unmarshal_body != nil {
 		return nil, errors.New("Incorrect body for function ADM_STORAGE_SWITCH_READWRITE")
 	}
@@ -31,7 +37,10 @@ func ADM_STORAGE_SWITCH_READWRITE(d *Delivery, body []byte) ([]byte, error) {
 
 func ADM_STORAGE_SWITCH_MAINTENANCE(d *Delivery, body []byte) ([]byte, error) {
 	var unmarshal_body interface{}
-	msgpack.Unmarshal(body, &unmarshal_body)
+	err := msgpack.Unmarshal(body, &unmarshal_body)
+	if err != nil {
+		return nil, errors.New("Incorrect Unmarshal")
+    }
 	if unmarshal_body != nil {
 		return nil, errors.New("Incorrect body for function ADM_STORAGE_SWITCH_MAINTENANCE")
 	}
