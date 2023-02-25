@@ -1,10 +1,11 @@
 package app
 
 import (
-	"log"
 	"net"
 	"net/rpc"
 	"runtime"
+
+    "github.com/sirupsen/logrus"
 
 	"github.com/K0STYAa/vk_iproto/internal"
 	"github.com/K0STYAa/vk_iproto/internal/delivery"
@@ -23,6 +24,7 @@ func (ms *MyService) MainHandler(req models.Request, reply *models.Response) err
 
 func Run() {
 	runtime.GOMAXPROCS(4)
+	models.LogStart()
 	my_storage := new(internal.BaseStorage)
 
 	repos := repository.NewRepository(my_storage)
@@ -30,16 +32,19 @@ func Run() {
 	delivery := delivery.NewDelivery(*service)
 	my_service := &MyService{delivery: delivery}
 	
-	rpc.Register(my_service)
+	err := rpc.Register(my_service)
+	if err != nil {
+		logrus.Fatal("Register Service error:", err)
+	}
 
     // Creating a listener on a local machine on port 8080
 	listener, err := net.Listen("tcp", ":8080")
 	if err != nil {
-		log.Fatal("ListenTCP error:", err)
+		logrus.Fatal("ListenTCP error:", err)
 	}
     defer listener.Close()
 
-    log.Println("The server is running, listening to port 8080...")
+    logrus.Info("The server is running, listening to port 8080...")
 
     // Infinite loop for processing incoming connections
 	for {

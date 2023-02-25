@@ -1,8 +1,11 @@
 package delivery
 
 import (
-	"github.com/vmihailenco/msgpack/v5"
+	"fmt"
+
 	"github.com/K0STYAa/vk_iproto/pkg/models"
+	"github.com/sirupsen/logrus"
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 func STORAGE_READ(d *Delivery, body []byte) ([]byte, error) {
@@ -12,6 +15,8 @@ func STORAGE_READ(d *Delivery, body []byte) ([]byte, error) {
     if err != nil {
         return nil, err
     }
+	// LOG REQUEST
+	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_READ(%v)", req))
 
 	resp, err := d.service.Read(req)
     if err != nil {
@@ -33,6 +38,8 @@ func STORAGE_REPLACE(d *Delivery, body []byte) ([]byte, error) {
     if err != nil {
         return nil, err
     }
+	// LOG REQUEST
+	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_REPLACE(%v)", req))
 
 	resp, err := d.service.Replace(req)
     if err != nil {

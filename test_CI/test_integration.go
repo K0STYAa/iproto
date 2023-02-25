@@ -138,11 +138,14 @@ func main() {
 		}
 
 		var body_resp interface{}
-		msgpack.Unmarshal(resp.Body, &body_resp)
+		err = msgpack.Unmarshal(resp.Body, &body_resp)
+		if err != nil {
+			log.Println(err.Error())
+		}
 		log.Printf("Calling %x(%v), result %v\n", testCase.foo, testCase.req, body_resp)
 
 		// Assert
-		if body_resp != nil && bytes.Compare(resp.Body, testCase_resp_bytes) != 0 ||
+		if body_resp != nil && !bytes.Equal(resp.Body, testCase_resp_bytes) ||
 			body_resp == nil && testCase.resp != body_resp {
 			log.Fatalf("Incorrect result. Expected %v, got %v", 
 			testCase.resp, body_resp)

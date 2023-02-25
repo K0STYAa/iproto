@@ -1,7 +1,7 @@
 package delivery
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 
 	"github.com/K0STYAa/vk_iproto/internal/service"
 	"github.com/K0STYAa/vk_iproto/pkg/models"
@@ -17,12 +17,6 @@ func NewDelivery(service service.Service) *Delivery {
 }
 
 func (d *Delivery) MainHandler(req models.Request) models.Response {
-	{ // LOG REQUEST 
-		var body_req interface{}
-		msgpack.Unmarshal(req.Body, &body_req)
-		log.Printf("[REQUEST]: %x(%v)", req.Header.FuncID, body_req)
-	}
-
 	// Find Handler function by FuncID
 	handlerFuncMap := map[uint32] func(*Delivery, []byte) ([]byte, error) {
         0x00010001: ADM_STORAGE_SWITCH_READONLY,
@@ -38,19 +32,30 @@ func (d *Delivery) MainHandler(req models.Request) models.Response {
 
 	var return_code uint32
 	var return_body []byte
-	if err != nil {
+
+	var body_resp models.RespReadArgs
+	if err == nil {
+		err2 := msgpack.Unmarshal(resp, &body_resp)
+		if err2 != nil {
+			return_code = 1
+			{ // LOG ERROR
+				logrus.Warn("[ERROR]: ", err2.Error())
+			}
+			return_body, _ = msgpack.Marshal(err2.Error())
+		} else {
+			if body_resp.S != "" { // LOG RESPONSE
+				logrus.Info("[RESPONSE]: ", body_resp.S)
+			} else {
+				logrus.Debug("[RESPONSE]: ", body_resp.S)
+			}
+			return_body = resp
+		}
+	} else {
 		return_code = 1
 		{ // LOG ERROR
-			log.Println("[ERROR]:", err.Error())
+			logrus.Warn("[ERROR]: ", err.Error())
 		}
 		return_body, _ = msgpack.Marshal(err.Error())
-	} else {
-		{ // LOG RESPONSE 
-			var body_resp interface{}
-			msgpack.Unmarshal(resp, &body_resp)
-			log.Println("[RESPONSE]:", body_resp)
-		}
-		return_body = resp
 	}
 
 	result := models.Response{

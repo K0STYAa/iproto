@@ -9,5 +9,6 @@ RUN go build -mod=vendor -o main -ldflags=-X=main.version=${VERSION} cmd/app/mai
 FROM debian:buster-slim
 COPY --from=builder /go/src/app/main /go/bin/main
 EXPOSE 8080
+ARG LOG_LEVEL=CRITICAL
 ENV PATH="/go/bin:${PATH}"
 CMD ["main"]
