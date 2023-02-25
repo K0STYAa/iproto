@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"log"
 	"net/rpc"
+	"strings"
 
 	"github.com/K0STYAa/vk_iproto/pkg/models"
 	"github.com/vmihailenco/msgpack/v5"
@@ -81,6 +82,31 @@ func main() {
 			req: nil,
 			resp: nil,
 		},
+		{	// Write Big Value
+			foo: 0x00020001,
+			req: &models.ReqReplaceArgs{Id: 1, S: strings.Repeat("Test", 66)},
+			resp: "Incoming String Cannot Take Up More Than 256 Bytes", // ERROR
+		},
+		{	// Read With Invalid ID
+			foo: 0x00020002,
+			req: &models.ReqReadArgs{Id: -1},
+			resp: "Invalid ID. Valid Value in range[0; 999]", // ERROR
+		},
+		{	// Read With Invalid ID
+			foo: 0x00020002,
+			req: &models.ReqReadArgs{Id: 1000},
+			resp: "Invalid ID. Valid Value in range[0; 999]", // ERROR
+		},
+		{	// Write With Invalid ID
+			foo: 0x00020001,
+			req: &models.ReqReplaceArgs{Id: -1, S: "a"},
+			resp: "Invalid ID. Valid Value in range[0; 999]", // ERROR
+		},
+		{	// Write With Invalid ID
+			foo: 0x00020001,
+			req: &models.ReqReplaceArgs{Id: 1000, S: "a"},
+			resp: "Invalid ID. Valid Value in range[0; 999]", // ERROR
+		},
 		{	// Return Storage
 			foo: 0x00020001,
 			req: &models.ReqReplaceArgs{Id: 1, S: ""},
@@ -118,7 +144,7 @@ func main() {
 		// Assert
 		if body_resp != nil && bytes.Compare(resp.Body, testCase_resp_bytes) != 0 ||
 			body_resp == nil && testCase.resp != body_resp {
-			log.Printf("Incorrect result. Expected %v, got %v", 
+			log.Fatalf("Incorrect result. Expected %v, got %v", 
 			testCase.resp, body_resp)
 		}
 	}

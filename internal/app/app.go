@@ -4,6 +4,7 @@ import (
 	"log"
 	"net"
 	"net/rpc"
+	"runtime"
 
 	"github.com/K0STYAa/vk_iproto/internal"
 	"github.com/K0STYAa/vk_iproto/internal/delivery"
@@ -21,6 +22,7 @@ func (ms *MyService) MainHandler(req models.Request, reply *models.Response) err
 }
 
 func Run() {
+	runtime.GOMAXPROCS(4)
 	my_storage := new(internal.BaseStorage)
 
 	repos := repository.NewRepository(my_storage)
