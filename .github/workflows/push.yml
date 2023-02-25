@@ -11,7 +11,7 @@ jobs:
       - name: Build Service
         run: go build -o app cmd/app/main.go 
       - name: Run Service 
-        run: ./app
+        run: ./app &
       - name: Run Integration Tests
         run: go run test_client/test.go 
 
