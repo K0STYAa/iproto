@@ -9,53 +9,85 @@ import (
 	"github.com/vmihailenco/msgpack/v5"
 )
 
-func ADM_STORAGE_SWITCH_READONLY(d *Delivery, body []byte) ([]byte, error) {
-	var unmarshal_body interface{}
-	err := msgpack.Unmarshal(body, &unmarshal_body)
+var (
+	ErrIncorrectBodyReadOnly    = errors.New("incorrect body for function ADM_STORAGE_SWITCH_READONLY")
+	ErrIncorrectBodyReadWrite   = errors.New("incorrect body for function ADM_STORAGE_SWITCH_READWRITE")
+	ErrIncorrectBodyMaintenance = errors.New("incorrect body for function ADM_STORAGE_SWITCH_MAINTENANCE")
+)
+
+const errTemplate = "%w"
+
+func ADM_STORAGE_SWITCH_READONLY(delivery *Delivery, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck,lll
+	var unmarshalBody interface{}
+
+	err := msgpack.Unmarshal(body, &unmarshalBody)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(errTemplate, err)
 	}
 	// LOG REQUEST
-	logrus.Warn(fmt.Sprintf("[REQUEST]: ADM_STORAGE_SWITCH_READONLY(%v)", unmarshal_body))
-	if unmarshal_body != nil {
-		return nil, errors.New("Incorrect body for function ADM_STORAGE_SWITCH_READONLY")
+	logrus.Warn(fmt.Sprintf("[REQUEST]: ADM_STORAGE_SWITCH_READONLY(%v)", unmarshalBody))
+
+	if unmarshalBody != nil {
+		return nil, ErrIncorrectBodyReadOnly
 	}
 
-	d.service.ChangeState(models.ReadOnly)
-	return_body, err := msgpack.Marshal(nil)
-	return return_body, err
+	delivery.service.ChangeState(models.ReadOnly)
+
+	returnBody, err := msgpack.Marshal(nil)
+
+	if err != nil {
+		return returnBody, fmt.Errorf(errTemplate, err)
+	}
+
+	return returnBody, nil
 }
 
-func ADM_STORAGE_SWITCH_READWRITE(d *Delivery, body []byte) ([]byte, error) {
-	var unmarshal_body interface{}
-	err := msgpack.Unmarshal(body, &unmarshal_body)
+func ADM_STORAGE_SWITCH_READWRITE(delivery *Delivery, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck,lll
+	var unmarshalBody interface{}
+
+	err := msgpack.Unmarshal(body, &unmarshalBody)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(errTemplate, err)
 	}
 	// LOG REQUEST
-	logrus.Warn(fmt.Sprintf("[REQUEST]: ADM_STORAGE_SWITCH_READWRITE(%v)", unmarshal_body))
-	if unmarshal_body != nil {
-		return nil, errors.New("Incorrect body for function ADM_STORAGE_SWITCH_READWRITE")
+	logrus.Warn(fmt.Sprintf("[REQUEST]: ADM_STORAGE_SWITCH_READWRITE(%v)", unmarshalBody))
+
+	if unmarshalBody != nil {
+		return nil, ErrIncorrectBodyReadWrite
 	}
 
-	d.service.ChangeState(models.ReadWrite)
-	return_body, err := msgpack.Marshal(nil)
-	return return_body, err
+	delivery.service.ChangeState(models.ReadWrite)
+
+	returnBody, err := msgpack.Marshal(nil)
+
+	if err != nil {
+		return returnBody, fmt.Errorf(errTemplate, err)
+	}
+
+	return returnBody, nil
 }
 
-func ADM_STORAGE_SWITCH_MAINTENANCE(d *Delivery, body []byte) ([]byte, error) {
-	var unmarshal_body interface{}
-	err := msgpack.Unmarshal(body, &unmarshal_body)
+func ADM_STORAGE_SWITCH_MAINTENANCE(delivery *Delivery, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck,lll
+	var unmarshalBody interface{}
+
+	err := msgpack.Unmarshal(body, &unmarshalBody)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(errTemplate, err)
 	}
 	// LOG REQUEST
-	logrus.Warn(fmt.Sprintf("[REQUEST]: ADM_STORAGE_SWITCH_MAINTENANCE(%v)", unmarshal_body))
-	if unmarshal_body != nil {
-		return nil, errors.New("Incorrect body for function ADM_STORAGE_SWITCH_MAINTENANCE")
+	logrus.Warn(fmt.Sprintf("[REQUEST]: ADM_STORAGE_SWITCH_MAINTENANCE(%v)", unmarshalBody))
+
+	if unmarshalBody != nil {
+		return nil, ErrIncorrectBodyMaintenance
 	}
 
-	d.service.ChangeState(models.Maintenance)
-	return_body, err := msgpack.Marshal(nil)
-	return return_body, err
+	delivery.service.ChangeState(models.Maintenance)
+
+	returnBody, err := msgpack.Marshal(nil)
+
+	if err != nil {
+		return returnBody, fmt.Errorf(errTemplate, err)
+	}
+
+	return returnBody, nil
 }

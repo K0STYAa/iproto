@@ -1,8 +1,9 @@
-package unittests
+package unittests_test
 
 import "testing"
 
 func TestHello(t *testing.T) {
+	t.Parallel()
 	// Arrange
 	testTable := []struct {
 		name     string

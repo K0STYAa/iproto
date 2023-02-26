@@ -5,13 +5,12 @@ import (
 	"net/rpc"
 	"runtime"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/K0STYAa/vk_iproto/internal"
 	"github.com/K0STYAa/vk_iproto/internal/delivery"
 	"github.com/K0STYAa/vk_iproto/internal/repository"
 	"github.com/K0STYAa/vk_iproto/internal/service"
 	"github.com/K0STYAa/vk_iproto/pkg/models"
+	"github.com/sirupsen/logrus"
 )
 
 type MyService struct {
@@ -20,20 +19,20 @@ type MyService struct {
 
 func (ms *MyService) MainHandler(req models.Request, reply *models.Response) error {
 	*reply = ms.delivery.MainHandler(req)
-	return nil
+	return nil //nolint: nlreturn
 }
 
 func Run() {
-	runtime.GOMAXPROCS(models.GOMAXPROCS_lim)
+	runtime.GOMAXPROCS(models.GoMaxProcsLim)
 	models.LogStart()
 
-	my_storage := new(internal.BaseStorage)
-	repos := repository.NewRepository(my_storage)
+	myStorage := new(internal.BaseStorage)
+	repos := repository.NewRepository(myStorage)
 	service := service.NewService(repos)
 	delivery := delivery.NewDelivery(*service)
-	my_service := &MyService{delivery: delivery}
+	myService := &MyService{delivery: delivery}
 
-	err := rpc.Register(my_service)
+	err := rpc.Register(myService)
 	if err != nil {
 		logrus.Fatal("Register Service error: ", err)
 	}
@@ -43,6 +42,7 @@ func Run() {
 	if err != nil {
 		logrus.Fatal("ListenTCP error: ", err)
 	}
+
 	defer func() {
 		if err := listener.Close(); err != nil {
 			logrus.Fatal("Error closing listener: ", err)

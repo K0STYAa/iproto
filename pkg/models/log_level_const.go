@@ -21,6 +21,7 @@ func LogStart() {
 
 	// Set the log level based on the environment variable
 	var logLevel logrus.Level
+
 	switch logLevelStr {
 	case DEBUG:
 		logLevel = logrus.DebugLevel

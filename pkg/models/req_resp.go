@@ -17,16 +17,16 @@ type Response struct {
 	Body       []byte
 }
 
-// Arguments structure
+// Arguments structure.
 type ReqReplaceArgs struct {
-	Id int
+	ID int
 	S  string
 }
 
 type RespReplaceArgs struct{}
 
 type ReqReadArgs struct {
-	Id int
+	ID int
 }
 
 type RespReadArgs struct {

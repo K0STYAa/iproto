@@ -1,8 +1,8 @@
 package models
 
 const (
-	GOMAXPROCS_lim = 4
+	GoMaxProcsLim  = 4
 	StorageDataLen = 1000
-	FirstDataId    = 0
+	FirstDataID    = 0
 	StringMaxLen   = 256
 )

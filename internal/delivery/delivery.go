@@ -1,10 +1,9 @@
 package delivery
 
 import (
-	"github.com/sirupsen/logrus"
-
 	"github.com/K0STYAa/vk_iproto/internal/service"
 	"github.com/K0STYAa/vk_iproto/pkg/models"
+	"github.com/sirupsen/logrus"
 	"github.com/vmihailenco/msgpack/v5"
 )
 
@@ -17,55 +16,56 @@ func NewDelivery(service service.Service) *Delivery {
 }
 
 func (d *Delivery) MainHandler(req models.Request) models.Response {
-
 	// Find Handler function by FuncID
 	handlerFuncMap := map[uint32]func(*Delivery, []byte) ([]byte, error){
-		0x00010001: ADM_STORAGE_SWITCH_READONLY,
-		0x00010002: ADM_STORAGE_SWITCH_READWRITE,
-		0x00010003: ADM_STORAGE_SWITCH_MAINTENANCE,
-		0x00020001: STORAGE_REPLACE,
-		0x00020002: STORAGE_READ,
+		0x00010001: ADM_STORAGE_SWITCH_READONLY,    //nolint: nosnakecase
+		0x00010002: ADM_STORAGE_SWITCH_READWRITE,   //nolint: nosnakecase
+		0x00010003: ADM_STORAGE_SWITCH_MAINTENANCE, //nolint: nosnakecase
+		0x00020001: STORAGE_REPLACE,                //nolint: nosnakecase
+		0x00020002: STORAGE_READ,                   //nolint: nosnakecase
 	}
-	delivery_func := handlerFuncMap[req.Header.FuncID]
+	deliveryFunc := handlerFuncMap[req.Header.FuncID]
 
 	// Call handler for function
-	resp, err := delivery_func(d, req.Body)
+	resp, err := deliveryFunc(d, req.Body)
 
-	var return_code uint32
-	var return_body []byte
+	var (
+		returnCode uint32
+		returnBody []byte
+		bodyResp   models.RespReadArgs
+	)
 
-	var body_resp models.RespReadArgs
-	if err == nil {
-		if err2 := msgpack.Unmarshal(resp, &body_resp); err2 != nil {
-			return_code = 1
-			{ // LOG ERROR
-				logrus.Warn("[ERROR]: ", err2.Error())
-			}
-			return_body, _ = msgpack.Marshal(err2.Error())
-		} else {
-			if body_resp.S != "" { // LOG RESPONSE
-				logrus.Info("[RESPONSE]: ", body_resp.S)
-			} else {
-				logrus.Debug("[RESPONSE]: ", body_resp.S)
-			}
-			return_body = resp
-		}
-	} else {
-		return_code = 1
+	if err != nil {
+		returnCode = 1
 		{ // LOG ERROR
 			logrus.Warn("[ERROR]: ", err.Error())
 		}
-		return_body, _ = msgpack.Marshal(err.Error())
+
+		returnBody, _ = msgpack.Marshal(err.Error())
+	} else if err2 := msgpack.Unmarshal(resp, &bodyResp); err2 != nil {
+		returnCode = 1
+		{ // LOG ERROR
+			logrus.Warn("[ERROR]: ", err2.Error())
+		}
+		returnBody, _ = msgpack.Marshal(err2.Error())
+	} else {
+		if bodyResp.S != "" { // LOG RESPONSE
+			logrus.Info("[RESPONSE]: ", bodyResp.S)
+		} else {
+			logrus.Debug("[RESPONSE]: ", bodyResp.S)
+		}
+		returnBody = resp
 	}
 
 	result := models.Response{
 		Header: models.Header{
 			FuncID:     req.Header.FuncID,
-			BodyLength: uint32(len(return_body)),
+			BodyLength: uint32(len(returnBody)),
 			RequestID:  req.Header.RequestID,
 		},
-		ReturnCode: return_code,
-		Body:       return_body,
+		ReturnCode: returnCode,
+		Body:       returnBody,
 	}
+
 	return result
 }

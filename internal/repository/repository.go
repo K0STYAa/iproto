@@ -6,7 +6,7 @@ import (
 )
 
 type State interface {
-	ChangeState(stateId uint8)
+	ChangeState(stateID uint8)
 }
 
 type ReadWrite interface {

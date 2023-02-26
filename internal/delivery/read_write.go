@@ -8,48 +8,49 @@ import (
 	"github.com/vmihailenco/msgpack/v5"
 )
 
-func STORAGE_READ(d *Delivery, body []byte) ([]byte, error) {
+func STORAGE_READ(delivery *Delivery, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck
 	var req models.ReqReadArgs
 
 	err := msgpack.Unmarshal(body, &req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(errTemplate, err)
 	}
 	// LOG REQUEST
 	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_READ(%v)", req))
 
-	resp, err := d.service.Read(req)
+	resp, err := delivery.service.Read(req)
+
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(errTemplate, err)
 	}
 
-	b, err := msgpack.Marshal(resp)
+	responseByte, err := msgpack.Marshal(resp)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(errTemplate, err)
 	}
 
-	return b, nil
+	return responseByte, nil
 }
 
-func STORAGE_REPLACE(d *Delivery, body []byte) ([]byte, error) {
+func STORAGE_REPLACE(delivery *Delivery, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck
 	var req models.ReqReplaceArgs
 
 	err := msgpack.Unmarshal(body, &req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(errTemplate, err)
 	}
 	// LOG REQUEST
 	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_REPLACE(%v)", req))
 
-	resp, err := d.service.Replace(req)
+	resp, err := delivery.service.Replace(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(errTemplate, err)
 	}
 
-	b, err := msgpack.Marshal(resp)
+	responseByte, err := msgpack.Marshal(resp)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(errTemplate, err)
 	}
 
-	return b, nil
+	return responseByte, nil
 }

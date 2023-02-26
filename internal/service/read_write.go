@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/K0STYAa/vk_iproto/internal/repository"
 	"github.com/K0STYAa/vk_iproto/pkg/models"
 )
@@ -13,14 +15,24 @@ func NewReadWriteService(repo repository.ReadWrite) *ReadWriteService {
 	return &ReadWriteService{repo: repo}
 }
 
-func (s *ReadWriteService) Read(ReqReadArgs models.ReqReadArgs) (models.RespReadArgs, error) {
-	resp, err := s.repo.Read(ReqReadArgs)
+const errTemplate = "%w"
 
-	return resp, err
+func (s *ReadWriteService) Read(reqReadArgs models.ReqReadArgs) (models.RespReadArgs, error) {
+	resp, err := s.repo.Read(reqReadArgs)
+
+	if err != nil {
+		return resp, fmt.Errorf(errTemplate, err)
+	}
+
+	return resp, nil
 }
 
-func (s *ReadWriteService) Replace(ReqReplaceArgs models.ReqReplaceArgs) (models.RespReplaceArgs, error) {
-	resp, err := s.repo.Replace(ReqReplaceArgs)
+func (s *ReadWriteService) Replace(reqReplaceArgs models.ReqReplaceArgs) (models.RespReplaceArgs, error) {
+	resp, err := s.repo.Replace(reqReplaceArgs)
 
-	return resp, err
+	if err != nil {
+		return resp, fmt.Errorf(errTemplate, err)
+	}
+
+	return resp, nil
 }
