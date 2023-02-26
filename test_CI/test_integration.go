@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	client, err := rpc.Dial("tcp", "localhost:80")
+	client, err := rpc.Dial("tcp", "localhost:8080")
 	if err != nil {
 		log.Fatal("Dial error:", err)
 	}

@@ -38,7 +38,7 @@ func Run() {
 	}
 
     // Creating a listener on a local machine on port 8080
-	listener, err := net.Listen("tcp", ":8080") //#nosec  G102 -- This is a false positive
+	listener, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		logrus.Fatal("ListenTCP error: ", err)
 	}
