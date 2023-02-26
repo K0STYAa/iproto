@@ -47,12 +47,7 @@ jobs:
           version: latest
 
           # Optional: golangci-lint command line arguments.
-          args: --enable-all --out-format "junit-xml:junit.xml,colored-line-number:stdout"
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v3
-        if: success() || failure() # always run even if the previous step fails
-        with:
-          report_paths: 'junit.xml'
+          args: --enable-all
 
 
   deploy:
