@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	client, err := rpc.Dial("tcp", "localhost:8080")
+	client, err := rpc.Dial("tcp", "localhost:80")
 	if err != nil {
 		log.Fatal("Dial error:", err)
 	}
@@ -134,7 +134,7 @@ func main() {
 
 		err := client.Call("MyService.MainHandler", req, &resp)
 		if err != nil {
-			log.Fatal("Call error:", err)
+			log.Fatal("Call error: ", err)
 		}
 
 		var body_resp interface{}

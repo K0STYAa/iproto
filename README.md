@@ -42,7 +42,13 @@ https://github.com/msgpack/msgpack/blob/master/spec.md
 `0x00020001` | `STORAGE_REPLACE`                | `<int><string>`    | `<nil>`           | записывает в сторадж строку по индексу
 `0x00020002` | `STORAGE_READ`                   | `<int>`            | `<string>`        | возвращает строку из стораджа по индексу
 
-
+### LOG_LEVEL:
+- DEBUG
+- INFO
+- WARNING
+- ERROR
+- FATAL
+- PANIC
 
 
 ## Для запуска сервера:

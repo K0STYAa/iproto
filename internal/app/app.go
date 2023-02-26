@@ -34,15 +34,19 @@ func Run() {
 	
 	err := rpc.Register(my_service)
 	if err != nil {
-		logrus.Fatal("Register Service error:", err)
+		logrus.Fatal("Register Service error: ", err)
 	}
 
     // Creating a listener on a local machine on port 8080
-	listener, err := net.Listen("tcp", ":8080")
+	listener, err := net.Listen("tcp", ":8080") //#nosec  G102 -- This is a false positive
 	if err != nil {
-		logrus.Fatal("ListenTCP error:", err)
+		logrus.Fatal("ListenTCP error: ", err)
 	}
-    defer listener.Close()
+	defer func() {
+		if err := listener.Close(); err != nil {
+			logrus.Fatal("Error closing listener: ", err)
+		}
+	}()
 
     logrus.Info("The server is running, listening to port 8080...")
 
