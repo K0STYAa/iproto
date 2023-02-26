@@ -23,7 +23,7 @@ func (ms *MyService) MainHandler(req models.Request, reply *models.Response) err
 }
 
 func Run() {
-	runtime.GOMAXPROCS(4)
+	runtime.GOMAXPROCS(models.GOMAXPROCS_lim)
 	models.LogStart()
 	my_storage := new(internal.BaseStorage)
 
