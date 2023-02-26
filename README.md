@@ -1,4 +1,5 @@
 # RPC API VK iproto
+[![golang-pipeline](https://github.com/K0STYAa/vk_iproto/actions/workflows/push.yml/badge.svg?branch=main)](https://github.com/K0STYAa/vk_iproto/actions/workflows/push.yml)
 
 Реализован `iproto`-сервер, который осуществляет операции над стораджем.
 
