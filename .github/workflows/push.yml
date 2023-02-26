@@ -16,6 +16,8 @@ jobs:
         run: go run test_CI/test_integration.go
 
   security-tests:
+    permissions:
+      checks: write
     runs-on: ubuntu-latest
     env:
       GO111MODULE: on
