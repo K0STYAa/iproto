@@ -18,9 +18,9 @@
 
 ### Формат стораджа:
 ```
-Data      		[1000]string
-StorageState 	uint8
-Mutex        	sync.RWMutex
+Data            [1000]string
+StorageState    uint8
+Mutex           sync.RWMutex
 ```
 Сторадж может находится в следующих состояних:
 - `READ_ONLY` - доступен только на чтение
@@ -56,12 +56,12 @@ https://github.com/msgpack/msgpack/blob/master/spec.md
 Build image and run container:
 ```
 docker build -t vk_iproto .
-docker run -p 80:8080 vk_iproto
+docker run -p 80:8080 -e "LOG_LEVEL=<LOG_LEVEL>" vk_iproto
 ```
 Or pull image from docker hub and than run:
 ```
 docker pull k0styaa/vk_iproto
-docker run -p 80:8080 vk_iproto
+docker run -p 80:8080 -e "LOG_LEVEL=<LOG_LEVEL>" vk_iproto
 ```
 
 ### Вызов удаленной процедуры у стораджа:
