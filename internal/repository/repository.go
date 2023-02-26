@@ -14,14 +14,14 @@ type ReadWrite interface {
 	Replace(ReqReplaceArgs models.ReqReplaceArgs) (models.RespReplaceArgs, error)
 }
 
-type Repository struct{
+type Repository struct {
 	State
 	ReadWrite
 }
 
 func NewRepository(storage *internal.BaseStorage) *Repository {
 	return &Repository{
-		State: NewStateStorage(storage),
+		State:     NewStateStorage(storage),
 		ReadWrite: NewReadWriteStorage(storage),
 	}
 }

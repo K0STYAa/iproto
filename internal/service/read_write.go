@@ -13,13 +13,13 @@ func NewReadWriteService(repo repository.ReadWrite) *ReadWriteService {
 	return &ReadWriteService{repo: repo}
 }
 
-func (s *ReadWriteService)Read(ReqReadArgs models.ReqReadArgs) (models.RespReadArgs, error){
+func (s *ReadWriteService) Read(ReqReadArgs models.ReqReadArgs) (models.RespReadArgs, error) {
 	resp, err := s.repo.Read(ReqReadArgs)
 
 	return resp, err
 }
 
-func (s *ReadWriteService)Replace(ReqReplaceArgs models.ReqReplaceArgs) (models.RespReplaceArgs, error){
+func (s *ReadWriteService) Replace(ReqReplaceArgs models.ReqReplaceArgs) (models.RespReplaceArgs, error) {
 	resp, err := s.repo.Replace(ReqReplaceArgs)
 
 	return resp, err

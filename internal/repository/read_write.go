@@ -15,8 +15,7 @@ func NewReadWriteStorage(storage *internal.BaseStorage) *ReadWriteStorage {
 	return &ReadWriteStorage{storage: storage}
 }
 
-
-func (s *ReadWriteStorage)Read(ReqReadArgs models.ReqReadArgs) (models.RespReadArgs, error){
+func (s *ReadWriteStorage) Read(ReqReadArgs models.ReqReadArgs) (models.RespReadArgs, error) {
 	if s.storage.StorageState == models.Maintenance {
 		return models.RespReadArgs{S: ""}, errors.New("Can't Read At Maintenance Mode")
 	}
@@ -30,7 +29,7 @@ func (s *ReadWriteStorage)Read(ReqReadArgs models.ReqReadArgs) (models.RespReadA
 	return models.RespReadArgs{S: s.storage.Data[ReqReadArgs.Id]}, nil
 }
 
-func (s *ReadWriteStorage)Replace(ReqReplaceArgs models.ReqReplaceArgs) (models.RespReplaceArgs, error){
+func (s *ReadWriteStorage) Replace(ReqReplaceArgs models.ReqReplaceArgs) (models.RespReplaceArgs, error) {
 	if s.storage.StorageState == models.Maintenance {
 		return models.RespReplaceArgs{}, errors.New("Can't Replace At Maintenance Mode")
 	}

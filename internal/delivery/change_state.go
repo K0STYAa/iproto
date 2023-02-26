@@ -12,9 +12,9 @@ import (
 func ADM_STORAGE_SWITCH_READONLY(d *Delivery, body []byte) ([]byte, error) {
 	var unmarshal_body interface{}
 	err := msgpack.Unmarshal(body, &unmarshal_body)
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 	// LOG REQUEST
 	logrus.Warn(fmt.Sprintf("[REQUEST]: ADM_STORAGE_SWITCH_READONLY(%v)", unmarshal_body))
 	if unmarshal_body != nil {
@@ -29,9 +29,9 @@ func ADM_STORAGE_SWITCH_READONLY(d *Delivery, body []byte) ([]byte, error) {
 func ADM_STORAGE_SWITCH_READWRITE(d *Delivery, body []byte) ([]byte, error) {
 	var unmarshal_body interface{}
 	err := msgpack.Unmarshal(body, &unmarshal_body)
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 	// LOG REQUEST
 	logrus.Warn(fmt.Sprintf("[REQUEST]: ADM_STORAGE_SWITCH_READWRITE(%v)", unmarshal_body))
 	if unmarshal_body != nil {
@@ -46,9 +46,9 @@ func ADM_STORAGE_SWITCH_READWRITE(d *Delivery, body []byte) ([]byte, error) {
 func ADM_STORAGE_SWITCH_MAINTENANCE(d *Delivery, body []byte) ([]byte, error) {
 	var unmarshal_body interface{}
 	err := msgpack.Unmarshal(body, &unmarshal_body)
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 	// LOG REQUEST
 	logrus.Warn(fmt.Sprintf("[REQUEST]: ADM_STORAGE_SWITCH_MAINTENANCE(%v)", unmarshal_body))
 	if unmarshal_body != nil {

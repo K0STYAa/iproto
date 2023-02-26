@@ -7,7 +7,7 @@ import (
 )
 
 type BaseStorage struct {
-    Data      		[models.StorageDataLen]string
-    StorageState 	uint8
-    Mutex        	sync.RWMutex
+	Data         [models.StorageDataLen]string
+	StorageState uint8
+	Mutex        sync.RWMutex
 }

@@ -17,14 +17,15 @@ func NewDelivery(service service.Service) *Delivery {
 }
 
 func (d *Delivery) MainHandler(req models.Request) models.Response {
+
 	// Find Handler function by FuncID
-	handlerFuncMap := map[uint32] func(*Delivery, []byte) ([]byte, error) {
-        0x00010001: ADM_STORAGE_SWITCH_READONLY,
-        0x00010002: ADM_STORAGE_SWITCH_READWRITE,
-        0x00010003: ADM_STORAGE_SWITCH_MAINTENANCE,
-        0x00020001: STORAGE_REPLACE,
-        0x00020002: STORAGE_READ,
-    }
+	handlerFuncMap := map[uint32]func(*Delivery, []byte) ([]byte, error){
+		0x00010001: ADM_STORAGE_SWITCH_READONLY,
+		0x00010002: ADM_STORAGE_SWITCH_READWRITE,
+		0x00010003: ADM_STORAGE_SWITCH_MAINTENANCE,
+		0x00020001: STORAGE_REPLACE,
+		0x00020002: STORAGE_READ,
+	}
 	delivery_func := handlerFuncMap[req.Header.FuncID]
 
 	// Call handler for function
@@ -35,8 +36,7 @@ func (d *Delivery) MainHandler(req models.Request) models.Response {
 
 	var body_resp models.RespReadArgs
 	if err == nil {
-		err2 := msgpack.Unmarshal(resp, &body_resp)
-		if err2 != nil {
+		if err2 := msgpack.Unmarshal(resp, &body_resp); err2 != nil {
 			return_code = 1
 			{ // LOG ERROR
 				logrus.Warn("[ERROR]: ", err2.Error())
@@ -60,12 +60,12 @@ func (d *Delivery) MainHandler(req models.Request) models.Response {
 
 	result := models.Response{
 		Header: models.Header{
-			FuncID: req.Header.FuncID,
+			FuncID:     req.Header.FuncID,
 			BodyLength: uint32(len(return_body)),
-			RequestID: req.Header.RequestID,
+			RequestID:  req.Header.RequestID,
 		},
 		ReturnCode: return_code,
-		Body: return_body,
+		Body:       return_body,
 	}
 	return result
 }

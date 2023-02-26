@@ -14,14 +14,14 @@ type ReadWrite interface {
 	Replace(ReqReplaceArgs models.ReqReplaceArgs) (models.RespReplaceArgs, error)
 }
 
-type Service struct{
+type Service struct {
 	State
 	ReadWrite
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		State: NewStateService(repos.State),
+		State:     NewStateService(repos.State),
 		ReadWrite: NewReadWriteService(repos.ReadWrite),
 	}
 }

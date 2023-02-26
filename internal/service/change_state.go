@@ -10,6 +10,6 @@ func NewStateService(repo repository.State) *StateService {
 	return &StateService{repo: repo}
 }
 
-func (s *StateService)ChangeState(stateId uint8) {
+func (s *StateService) ChangeState(stateId uint8) {
 	s.repo.ChangeState(stateId)
 }
