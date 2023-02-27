@@ -2,7 +2,7 @@ package storage
 
 import (
 	"github.com/K0STYAa/vk_iproto/internal"
-	iproto"github.com/K0STYAa/vk_iproto/pkg/iproto"
+	"github.com/K0STYAa/vk_iproto/pkg/iproto"
 )
 
 type State interface {

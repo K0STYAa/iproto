@@ -47,7 +47,7 @@ jobs:
           version: latest
 
           # Optional: golangci-lint command line arguments.
-          args: --enable-all --disable gofumpt gci gofmt goimports
+          args: --enable-all --disable gofumpt,gci,gofmt,goimports
 
 
   deploy:
