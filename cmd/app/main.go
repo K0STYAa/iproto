@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	GoMaxProcsLim  = 4
+	GoMaxProcsLim = 4
 )
 
 func main() {

@@ -64,6 +64,8 @@ docker pull k0styaa/vk_iproto
 docker run -p 80:8080 -e "LOG_LEVEL=<LOG_LEVEL>" vk_iproto
 ```
 
+### Метрики можно посмотреть http://localhost:8088/metrics
+
 ### Вызов удаленной процедуры у стораджа:
 ```
 type Header struct {

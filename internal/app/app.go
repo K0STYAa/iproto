@@ -12,26 +12,27 @@ import (
 	"github.com/K0STYAa/vk_iproto/internal/storage"
 	"github.com/K0STYAa/vk_iproto/internal/usecase"
 	"github.com/K0STYAa/vk_iproto/pkg/iproto"
+	"github.com/K0STYAa/vk_iproto/pkg/prometheus"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/time/rate"
 )
 
 type MyService struct {
 	iprotoserver *iprotoserver.IprotoServer
-	rateLimiter *rate.Limiter
+	rateLimiter  *rate.Limiter
 }
 
 const (
-	rpsLimit = 10000
-	burstLimit = 10000
-    maxConnections = 100
-	errTemplate = "%w"
+	rpsLimit       = 10000
+	burstLimit     = 10000
+	maxConnections = 100
+	errTemplate    = "%w"
 )
 
 func (ms *MyService) MainHandler(req iproto.Request, reply *iproto.Response) error {
 	if err := ms.rateLimiter.Wait(context.Background()); err != nil {
-        return fmt.Errorf(errTemplate, err)
-    }
+		return fmt.Errorf(errTemplate, err)
+	}
 
 	*reply = ms.iprotoserver.MainHandler(req)
 
@@ -42,10 +43,12 @@ func Run() {
 	rateLimiter := rate.NewLimiter(rpsLimit, burstLimit)
 
 	// Set up a counting semaphore to limit the number of connections to 100.
-    semaphore := make(chan struct{}, maxConnections)
+	semaphore := make(chan struct{}, maxConnections)
 
 	// Set up a wait group to keep track of active connections.
 	var waitGroup sync.WaitGroup
+
+	go prometheus.InitPrometheus()
 
 	myStorage := new(internal.BaseStorage)
 	repos := storage.NewRepository(myStorage)
@@ -80,20 +83,20 @@ func Run() {
 		}
 
 		// Acquire a slot in the semaphore.
-        semaphore <- struct{}{}
+		semaphore <- struct{}{}
 
-        // Add the connection to the wait group.
-        waitGroup.Add(1)
+		// Add the connection to the wait group.
+		waitGroup.Add(1)
 
 		// Serve the connection in a separate goroutine.
 		go func() {
-            defer func() {
-                // Release the slot in the semaphore and mark the connection as done.
-                <-semaphore
-                waitGroup.Done()
-            }()
+			defer func() {
+				// Release the slot in the semaphore and mark the connection as done.
+				<-semaphore
+				waitGroup.Done()
+			}()
 
-            rpc.ServeConn(conn)
-        }()
+			rpc.ServeConn(conn)
+		}()
 	}
 }

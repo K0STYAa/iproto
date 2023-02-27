@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/K0STYAa/vk_iproto/pkg/iproto"
+	"github.com/K0STYAa/vk_iproto/pkg/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/vmihailenco/msgpack/v5"
 )
@@ -20,10 +21,11 @@ func STORAGE_READ(iprotoserver *IprotoServer, body []byte) ([]byte, error) { //n
 	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_READ(%v)", req))
 
 	resp, err := iprotoserver.usecase.Read(req)
-
 	if err != nil {
 		return nil, fmt.Errorf(errTemplate, err)
 	}
+
+	prometheus.StorageReads.Inc() // increment the storageReads metric
 
 	responseByte, err := msgpack.Marshal(resp)
 	if err != nil {
@@ -48,6 +50,8 @@ func STORAGE_REPLACE(iprotoserver *IprotoServer, body []byte) ([]byte, error) { 
 	if err != nil {
 		return nil, fmt.Errorf(errTemplate, err)
 	}
+
+	prometheus.StorageWrites.Inc() // increment the storageWrites metric
 
 	responseByte, err := msgpack.Marshal(resp)
 	if err != nil {
