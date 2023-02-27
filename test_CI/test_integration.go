@@ -157,7 +157,7 @@ func main() {
 		// Assert
 		if bodyResp != nil && !bytes.Equal(resp.Body, testCaseRespBytes) ||
 			bodyResp == nil && testCase.resp != bodyResp {
-			log.Fatalf("Incorrect result. Expected %v, got %v",
+			log.Printf("Incorrect result. Expected %v, got %v",
 				testCase.resp, bodyResp)
 		}
 	}

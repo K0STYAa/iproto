@@ -1,8 +1,11 @@
 package app
 
 import (
+	"context"
+	"fmt"
 	"net"
 	"net/rpc"
+	"sync"
 
 	"github.com/K0STYAa/vk_iproto/internal"
 	"github.com/K0STYAa/vk_iproto/internal/iproto_server"
@@ -10,23 +13,45 @@ import (
 	"github.com/K0STYAa/vk_iproto/internal/usecase"
 	"github.com/K0STYAa/vk_iproto/pkg/iproto"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/time/rate"
 )
 
 type MyService struct {
 	iprotoserver *iprotoserver.IprotoServer
+	rateLimiter *rate.Limiter
 }
 
+const (
+	rpsLimit = 10000
+	burstLimit = 10000
+    maxConnections = 100
+	errTemplate = "%w"
+)
+
 func (ms *MyService) MainHandler(req iproto.Request, reply *iproto.Response) error {
+	if err := ms.rateLimiter.Wait(context.Background()); err != nil {
+        return fmt.Errorf(errTemplate, err)
+    }
+
 	*reply = ms.iprotoserver.MainHandler(req)
-	return nil //nolint: nlreturn
+
+	return nil
 }
 
 func Run() {
+	rateLimiter := rate.NewLimiter(rpsLimit, burstLimit)
+
+	// Set up a counting semaphore to limit the number of connections to 100.
+    semaphore := make(chan struct{}, maxConnections)
+
+	// Set up a wait group to keep track of active connections.
+	var waitGroup sync.WaitGroup
+
 	myStorage := new(internal.BaseStorage)
 	repos := storage.NewRepository(myStorage)
 	usecase := usecase.NewUsecase(repos)
 	iprotoserver := iprotoserver.NewIprotoServer(*usecase)
-	myService := &MyService{iprotoserver: iprotoserver}
+	myService := &MyService{iprotoserver: iprotoserver, rateLimiter: rateLimiter}
 
 	err := rpc.Register(myService)
 	if err != nil {
@@ -54,6 +79,21 @@ func Run() {
 			continue
 		}
 
-		go rpc.ServeConn(conn)
+		// Acquire a slot in the semaphore.
+        semaphore <- struct{}{}
+
+        // Add the connection to the wait group.
+        waitGroup.Add(1)
+
+		// Serve the connection in a separate goroutine.
+		go func() {
+            defer func() {
+                // Release the slot in the semaphore and mark the connection as done.
+                <-semaphore
+                waitGroup.Done()
+            }()
+
+            rpc.ServeConn(conn)
+        }()
 	}
 }
