@@ -1,8 +1,8 @@
-package repository
+package storage
 
 import (
 	"github.com/K0STYAa/vk_iproto/internal"
-	"github.com/K0STYAa/vk_iproto/pkg/models"
+	iproto"github.com/K0STYAa/vk_iproto/pkg/iproto"
 )
 
 type State interface {
@@ -10,8 +10,8 @@ type State interface {
 }
 
 type ReadWrite interface {
-	Read(ReqReadArgs models.ReqReadArgs) (models.RespReadArgs, error)
-	Replace(ReqReplaceArgs models.ReqReplaceArgs) (models.RespReplaceArgs, error)
+	Read(ReqReadArgs iproto.ReqReadArgs) (iproto.RespReadArgs, error)
+	Replace(ReqReplaceArgs iproto.ReqReplaceArgs) (iproto.RespReplaceArgs, error)
 }
 
 type Repository struct {

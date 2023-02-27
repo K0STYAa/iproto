@@ -3,34 +3,30 @@ package app
 import (
 	"net"
 	"net/rpc"
-	"runtime"
 
 	"github.com/K0STYAa/vk_iproto/internal"
-	"github.com/K0STYAa/vk_iproto/internal/delivery"
-	"github.com/K0STYAa/vk_iproto/internal/repository"
-	"github.com/K0STYAa/vk_iproto/internal/service"
-	"github.com/K0STYAa/vk_iproto/pkg/models"
+	"github.com/K0STYAa/vk_iproto/internal/iproto_server"
+	"github.com/K0STYAa/vk_iproto/internal/storage"
+	"github.com/K0STYAa/vk_iproto/internal/usecase"
+	"github.com/K0STYAa/vk_iproto/pkg/iproto"
 	"github.com/sirupsen/logrus"
 )
 
 type MyService struct {
-	delivery *delivery.Delivery
+	iprotoserver *iprotoserver.IprotoServer
 }
 
-func (ms *MyService) MainHandler(req models.Request, reply *models.Response) error {
-	*reply = ms.delivery.MainHandler(req)
+func (ms *MyService) MainHandler(req iproto.Request, reply *iproto.Response) error {
+	*reply = ms.iprotoserver.MainHandler(req)
 	return nil //nolint: nlreturn
 }
 
 func Run() {
-	runtime.GOMAXPROCS(models.GoMaxProcsLim)
-	models.LogStart()
-
 	myStorage := new(internal.BaseStorage)
-	repos := repository.NewRepository(myStorage)
-	service := service.NewService(repos)
-	delivery := delivery.NewDelivery(*service)
-	myService := &MyService{delivery: delivery}
+	repos := storage.NewRepository(myStorage)
+	usecase := usecase.NewUsecase(repos)
+	iprotoserver := iprotoserver.NewIprotoServer(*usecase)
+	myService := &MyService{iprotoserver: iprotoserver}
 
 	err := rpc.Register(myService)
 	if err != nil {

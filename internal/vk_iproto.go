@@ -2,12 +2,20 @@ package internal
 
 import (
 	"sync"
+)
 
-	"github.com/K0STYAa/vk_iproto/pkg/models"
+const (
+	ReadWrite uint8 = iota
+	ReadOnly
+	Maintenance
+
+	StorageDataLen = 1000
+	FirstDataID    = 0
+	StringMaxLen   = 256
 )
 
 type BaseStorage struct {
-	Data         [models.StorageDataLen]string
+	Data         [StorageDataLen]string
 	StorageState uint8
 	Mutex        sync.RWMutex
 }

@@ -1,10 +1,10 @@
-package delivery
+package iprotoserver
 
 import (
 	"errors"
 	"fmt"
 
-	"github.com/K0STYAa/vk_iproto/pkg/models"
+	"github.com/K0STYAa/vk_iproto/internal"
 	"github.com/sirupsen/logrus"
 	"github.com/vmihailenco/msgpack/v5"
 )
@@ -17,7 +17,7 @@ var (
 
 const errTemplate = "%w"
 
-func ADM_STORAGE_SWITCH_READONLY(delivery *Delivery, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck,lll
+func ADM_STORAGE_SWITCH_READONLY(iprotoserver *IprotoServer, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck,lll
 	var unmarshalBody interface{}
 
 	err := msgpack.Unmarshal(body, &unmarshalBody)
@@ -31,7 +31,7 @@ func ADM_STORAGE_SWITCH_READONLY(delivery *Delivery, body []byte) ([]byte, error
 		return nil, ErrIncorrectBodyReadOnly
 	}
 
-	delivery.service.ChangeState(models.ReadOnly)
+	iprotoserver.usecase.ChangeState(internal.ReadOnly)
 
 	returnBody, err := msgpack.Marshal(nil)
 
@@ -42,7 +42,7 @@ func ADM_STORAGE_SWITCH_READONLY(delivery *Delivery, body []byte) ([]byte, error
 	return returnBody, nil
 }
 
-func ADM_STORAGE_SWITCH_READWRITE(delivery *Delivery, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck,lll
+func ADM_STORAGE_SWITCH_READWRITE(iprotoserver *IprotoServer, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck,lll
 	var unmarshalBody interface{}
 
 	err := msgpack.Unmarshal(body, &unmarshalBody)
@@ -56,7 +56,7 @@ func ADM_STORAGE_SWITCH_READWRITE(delivery *Delivery, body []byte) ([]byte, erro
 		return nil, ErrIncorrectBodyReadWrite
 	}
 
-	delivery.service.ChangeState(models.ReadWrite)
+	iprotoserver.usecase.ChangeState(internal.ReadWrite)
 
 	returnBody, err := msgpack.Marshal(nil)
 
@@ -67,7 +67,7 @@ func ADM_STORAGE_SWITCH_READWRITE(delivery *Delivery, body []byte) ([]byte, erro
 	return returnBody, nil
 }
 
-func ADM_STORAGE_SWITCH_MAINTENANCE(delivery *Delivery, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck,lll
+func ADM_STORAGE_SWITCH_MAINTENANCE(iprotoserver *IprotoServer, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck,lll
 	var unmarshalBody interface{}
 
 	err := msgpack.Unmarshal(body, &unmarshalBody)
@@ -81,7 +81,7 @@ func ADM_STORAGE_SWITCH_MAINTENANCE(delivery *Delivery, body []byte) ([]byte, er
 		return nil, ErrIncorrectBodyMaintenance
 	}
 
-	delivery.service.ChangeState(models.Maintenance)
+	iprotoserver.usecase.ChangeState(internal.Maintenance)
 
 	returnBody, err := msgpack.Marshal(nil)
 

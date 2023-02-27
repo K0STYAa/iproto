@@ -1,4 +1,4 @@
-package models
+package iproto
 
 type Header struct {
 	FuncID     uint32

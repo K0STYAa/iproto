@@ -1,38 +1,38 @@
-package delivery
+package iprotoserver
 
 import (
-	"github.com/K0STYAa/vk_iproto/internal/service"
-	"github.com/K0STYAa/vk_iproto/pkg/models"
+	"github.com/K0STYAa/vk_iproto/internal/usecase"
+	"github.com/K0STYAa/vk_iproto/pkg/iproto"
 	"github.com/sirupsen/logrus"
 	"github.com/vmihailenco/msgpack/v5"
 )
 
-type Delivery struct {
-	service *service.Service
+type IprotoServer struct {
+	usecase *usecase.Usecase
 }
 
-func NewDelivery(service service.Service) *Delivery {
-	return &Delivery{service: &service}
+func NewIprotoServer(usecase usecase.Usecase) *IprotoServer {
+	return &IprotoServer{usecase: &usecase}
 }
 
-func (d *Delivery) MainHandler(req models.Request) models.Response {
+func (d *IprotoServer) MainHandler(req iproto.Request) iproto.Response {
 	// Find Handler function by FuncID
-	handlerFuncMap := map[uint32]func(*Delivery, []byte) ([]byte, error){
+	handlerFuncMap := map[uint32]func(*IprotoServer, []byte) ([]byte, error){
 		0x00010001: ADM_STORAGE_SWITCH_READONLY,    //nolint: nosnakecase
 		0x00010002: ADM_STORAGE_SWITCH_READWRITE,   //nolint: nosnakecase
 		0x00010003: ADM_STORAGE_SWITCH_MAINTENANCE, //nolint: nosnakecase
 		0x00020001: STORAGE_REPLACE,                //nolint: nosnakecase
 		0x00020002: STORAGE_READ,                   //nolint: nosnakecase
 	}
-	deliveryFunc := handlerFuncMap[req.Header.FuncID]
+	iprotoserverFunc := handlerFuncMap[req.Header.FuncID]
 
 	// Call handler for function
-	resp, err := deliveryFunc(d, req.Body)
+	resp, err := iprotoserverFunc(d, req.Body)
 
 	var (
 		returnCode uint32
 		returnBody []byte
-		bodyResp   models.RespReadArgs
+		bodyResp   iproto.RespReadArgs
 	)
 
 	if err != nil {
@@ -57,8 +57,8 @@ func (d *Delivery) MainHandler(req models.Request) models.Response {
 		returnBody = resp
 	}
 
-	result := models.Response{
-		Header: models.Header{
+	result := iproto.Response{
+		Header: iproto.Header{
 			FuncID:     req.Header.FuncID,
 			BodyLength: uint32(len(returnBody)),
 			RequestID:  req.Header.RequestID,

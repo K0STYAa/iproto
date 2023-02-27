@@ -1,15 +1,16 @@
-package delivery
+package iprotoserver
 
 import (
 	"fmt"
 
-	"github.com/K0STYAa/vk_iproto/pkg/models"
+	"github.com/K0STYAa/vk_iproto/pkg/iproto"
 	"github.com/sirupsen/logrus"
 	"github.com/vmihailenco/msgpack/v5"
 )
 
-func STORAGE_READ(delivery *Delivery, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck
-	var req models.ReqReadArgs
+// swiftlint:disable:next line_length
+func STORAGE_READ(iprotoserver *IprotoServer, body []byte) ([]byte, error) { //nolint: lll,golint,revive,nosnakecase,stylecheck
+	var req iproto.ReqReadArgs
 
 	err := msgpack.Unmarshal(body, &req)
 	if err != nil {
@@ -18,7 +19,7 @@ func STORAGE_READ(delivery *Delivery, body []byte) ([]byte, error) { //nolint: g
 	// LOG REQUEST
 	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_READ(%v)", req))
 
-	resp, err := delivery.service.Read(req)
+	resp, err := iprotoserver.usecase.Read(req)
 
 	if err != nil {
 		return nil, fmt.Errorf(errTemplate, err)
@@ -32,8 +33,9 @@ func STORAGE_READ(delivery *Delivery, body []byte) ([]byte, error) { //nolint: g
 	return responseByte, nil
 }
 
-func STORAGE_REPLACE(delivery *Delivery, body []byte) ([]byte, error) { //nolint: golint,revive,nosnakecase,stylecheck
-	var req models.ReqReplaceArgs
+// swiftlint:disable:next line_length
+func STORAGE_REPLACE(iprotoserver *IprotoServer, body []byte) ([]byte, error) { //nolint: lll,golint,revive,nosnakecase,stylecheck
+	var req iproto.ReqReplaceArgs
 
 	err := msgpack.Unmarshal(body, &req)
 	if err != nil {
@@ -42,7 +44,7 @@ func STORAGE_REPLACE(delivery *Delivery, body []byte) ([]byte, error) { //nolint
 	// LOG REQUEST
 	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_REPLACE(%v)", req))
 
-	resp, err := delivery.service.Replace(req)
+	resp, err := iprotoserver.usecase.Replace(req)
 	if err != nil {
 		return nil, fmt.Errorf(errTemplate, err)
 	}

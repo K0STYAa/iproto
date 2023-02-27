@@ -6,7 +6,7 @@ import (
 	"net/rpc"
 	"strings"
 
-	"github.com/K0STYAa/vk_iproto/pkg/models"
+	"github.com/K0STYAa/vk_iproto/pkg/iproto"
 	"github.com/vmihailenco/msgpack/v5"
 )
 
@@ -30,28 +30,28 @@ type testTable struct {
 var myTestTable = []testTable{ //nolint: gochecknoglobals
 	{ // Read Empty Value
 		foo:  StorageRead,
-		req:  &models.ReqReadArgs{ID: 1},
-		resp: &models.RespReadArgs{S: ""},
+		req:  &iproto.ReqReadArgs{ID: 1},
+		resp: &iproto.RespReadArgs{S: ""},
 	},
 	{ // Write Value
 		foo:  StorageReplace,
-		req:  &models.ReqReplaceArgs{ID: 1, S: "Kostya"},
-		resp: &models.RespReplaceArgs{},
+		req:  &iproto.ReqReplaceArgs{ID: 1, S: "Kostya"},
+		resp: &iproto.RespReplaceArgs{},
 	},
 	{ // Read New Value
 		foo:  StorageRead,
-		req:  &models.ReqReadArgs{ID: 1},
-		resp: &models.RespReadArgs{S: "Kostya"},
+		req:  &iproto.ReqReadArgs{ID: 1},
+		resp: &iproto.RespReadArgs{S: "Kostya"},
 	},
 	{ // Replace Value
 		foo:  StorageReplace,
-		req:  &models.ReqReplaceArgs{ID: 1, S: "Max"},
-		resp: &models.RespReplaceArgs{},
+		req:  &iproto.ReqReplaceArgs{ID: 1, S: "Max"},
+		resp: &iproto.RespReplaceArgs{},
 	},
 	{ // Read New Value
 		foo:  StorageRead,
-		req:  &models.ReqReadArgs{ID: 1},
-		resp: &models.RespReadArgs{S: "Max"},
+		req:  &iproto.ReqReadArgs{ID: 1},
+		resp: &iproto.RespReadArgs{S: "Max"},
 	},
 	{ // Change On State Read-Only
 		foo:  AdmStorageSwitchReadOnly,
@@ -60,13 +60,13 @@ var myTestTable = []testTable{ //nolint: gochecknoglobals
 	},
 	{ // Try To Write In State Read-Only
 		foo:  StorageReplace,
-		req:  &models.ReqReplaceArgs{ID: 1, S: "Serg"},
+		req:  &iproto.ReqReplaceArgs{ID: 1, S: "Serg"},
 		resp: "can't replace at readOnly mode", // ERROR
 	},
 	{ // Read Same Value
 		foo:  StorageRead,
-		req:  &models.ReqReadArgs{ID: 1},
-		resp: &models.RespReadArgs{S: "Max"},
+		req:  &iproto.ReqReadArgs{ID: 1},
+		resp: &iproto.RespReadArgs{S: "Max"},
 	},
 	{ // Change On State Maintenance
 		foo:  AdmStorageSwitchMaintenance,
@@ -75,12 +75,12 @@ var myTestTable = []testTable{ //nolint: gochecknoglobals
 	},
 	{ // Try To Write In State Maintenance
 		foo:  StorageReplace,
-		req:  &models.ReqReplaceArgs{ID: 1, S: "Serg"},
+		req:  &iproto.ReqReplaceArgs{ID: 1, S: "Serg"},
 		resp: "can't replace at maintenance mode", // ERROR
 	},
 	{ // Try To Read In State Maintenance
 		foo:  StorageRead,
-		req:  &models.ReqReadArgs{ID: 1},
+		req:  &iproto.ReqReadArgs{ID: 1},
 		resp: "can't read at maintenance mode", // ERROR
 	},
 	{ // Change On State Read-Write
@@ -90,33 +90,33 @@ var myTestTable = []testTable{ //nolint: gochecknoglobals
 	},
 	{ // Write Big Value
 		foo:  StorageReplace,
-		req:  &models.ReqReplaceArgs{ID: 1, S: strings.Repeat("A", BigStringBytes)},
+		req:  &iproto.ReqReplaceArgs{ID: 1, S: strings.Repeat("A", BigStringBytes)},
 		resp: "incoming string cannot take up more than 256 bytes", // ERROR
 	},
 	{ // Read With Invalid ID
 		foo:  StorageRead,
-		req:  &models.ReqReadArgs{ID: -1},
+		req:  &iproto.ReqReadArgs{ID: -1},
 		resp: "invalid ID. Valid value in range[0; 999]", // ERROR
 	},
 	{ // Read With Invalid ID
 		foo:  StorageRead,
-		req:  &models.ReqReadArgs{ID: BigID},
+		req:  &iproto.ReqReadArgs{ID: BigID},
 		resp: "invalid ID. Valid value in range[0; 999]", // ERROR
 	},
 	{ // Write With Invalid ID
 		foo:  StorageReplace,
-		req:  &models.ReqReplaceArgs{ID: -1, S: "a"},
+		req:  &iproto.ReqReplaceArgs{ID: -1, S: "a"},
 		resp: "invalid ID. Valid value in range[0; 999]", // ERROR
 	},
 	{ // Write With Invalid ID
 		foo:  StorageReplace,
-		req:  &models.ReqReplaceArgs{ID: BigID, S: "a"},
+		req:  &iproto.ReqReplaceArgs{ID: BigID, S: "a"},
 		resp: "invalid ID. Valid value in range[0; 999]", // ERROR
 	},
 	{ // Return Storage
 		foo:  StorageReplace,
-		req:  &models.ReqReplaceArgs{ID: 1, S: ""},
-		resp: &models.RespReplaceArgs{},
+		req:  &iproto.ReqReplaceArgs{ID: 1, S: ""},
+		resp: &iproto.RespReplaceArgs{},
 	},
 }
 
@@ -127,12 +127,12 @@ func main() {
 	}
 	// Act
 	for requestID, testCase := range myTestTable {
-		var resp models.Response
+		var resp iproto.Response
 
 		reqBody, _ := msgpack.Marshal(testCase.req)
 		testCaseRespBytes, _ := msgpack.Marshal(testCase.resp)
-		req := models.Request{
-			Header: models.Header{
+		req := iproto.Request{
+			Header: iproto.Header{
 				FuncID:     testCase.foo,
 				BodyLength: uint32(len(reqBody)),
 				RequestID:  uint32(requestID),

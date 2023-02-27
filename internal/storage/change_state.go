@@ -1,4 +1,4 @@
-package repository
+package storage
 
 import (
 	"github.com/K0STYAa/vk_iproto/internal"
