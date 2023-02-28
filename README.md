@@ -54,7 +54,7 @@ https://github.com/msgpack/msgpack/blob/master/spec.md
 ## Набор метрик:
 ### Встроенные в prometheus метрики:
 1. Мониторинг горутин: количество запущенных горутин (go_goroutines)
-2. Метрики производительности: время отклика, пропускная способность, количество обрабатываемых запросов в единицу времени и использование ресурсов (например, памяти и CPU) (process_cpu_seconds_total, process_open_fds, process_start_time_seconds, process_virtual_memory_bytes, process_virtual_memory_max_bytes, etc)
+2. Метрики производительности: использование ресурсов (например, памяти и CPU) (process_cpu_seconds_total, process_open_fds, process_start_time_seconds, process_virtual_memory_bytes, process_virtual_memory_max_bytes, etc)
 ### Собственные бизнес-метрики:
 3. Метрики профилирования: количество успешно отработанных запросов для чтения/записи (storage_successful_reads_total, storage_successful_writes_total)
 4. Метрики стабильности: количество ошибок и сбоев для чтения/записи (storage_error_reads_total, storage_error_writes_total)
