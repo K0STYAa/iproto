@@ -82,12 +82,11 @@ func Run() {
 			continue
 		}
 
+		prometheus.ConnectionsCount.Inc()
 		// Acquire a slot in the semaphore.
 		semaphore <- struct{}{}
-
 		// Add the connection to the wait group.
 		waitGroup.Add(1)
-
 		// Serve the connection in a separate goroutine.
 		go func() {
 			defer func() {

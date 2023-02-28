@@ -51,6 +51,19 @@ https://github.com/msgpack/msgpack/blob/master/spec.md
 - FATAL
 - PANIC
 
+## Набор метрик:
+### Встроенные в prometheus метрики:
+1. Мониторинг горутин: количество запущенных горутин (go_goroutines)
+2. Метрики производительности: время отклика, пропускная способность, количество обрабатываемых запросов в единицу времени и использование ресурсов (например, памяти и CPU) (process_cpu_seconds_total, process_open_fds, process_start_time_seconds, process_virtual_memory_bytes, process_virtual_memory_max_bytes, etc)
+### Собственные бизнес-метрики:
+3. Метрики профилирования: количество успешно отработанных запросов для чтения/записи (storage_successful_reads_total, storage_successful_writes_total)
+4. Метрики стабильности: количество ошибок и сбоев для чтения/записи (storage_error_reads_total, storage_error_writes_total)
+5. Метрики распределения запросов: распределение запросов по эндпоинтам (storage_reads_total, storage_writes_total, change_storage_state_on_read_write_total, change_storage_state_on_read_only_total, change_storage_state_on_maintenance_total)
+6. Метрики количества подключений (connections_total)
+
+P.S. Я считаю подсчет изменений состояния отдельно для ReadOnly, ReadWrite, Maintenance, т.к. в случае реализации метрики как флага состояния, если между сборами prometheus при больших значениях скраппинг интервала в API состояние изменилось и потом вернулось обратно, то prometheus не зафиксирует изменение состояния.
+
+Полный набор метрик можно посмотреть http://localhost:8088/metrics
 
 ## Для запуска сервера:
 Build image and run container:
@@ -63,8 +76,6 @@ Or pull image from docker hub and than run:
 docker pull k0styaa/vk_iproto
 docker run -p 80:8080 -e "LOG_LEVEL=<LOG_LEVEL>" vk_iproto
 ```
-
-### Метрики можно посмотреть http://localhost:8088/metrics
 
 ### Вызов удаленной процедуры у стораджа:
 ```

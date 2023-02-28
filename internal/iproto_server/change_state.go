@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/K0STYAa/vk_iproto/internal"
+	"github.com/K0STYAa/vk_iproto/pkg/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/vmihailenco/msgpack/v5"
 )
@@ -33,6 +34,8 @@ func ADM_STORAGE_SWITCH_READONLY(iprotoserver *IprotoServer, body []byte) ([]byt
 
 	iprotoserver.usecase.ChangeState(internal.ReadOnly)
 
+	prometheus.ReadOnlyChangeState.Inc()
+
 	returnBody, err := msgpack.Marshal(nil)
 
 	if err != nil {
@@ -58,6 +61,8 @@ func ADM_STORAGE_SWITCH_READWRITE(iprotoserver *IprotoServer, body []byte) ([]by
 
 	iprotoserver.usecase.ChangeState(internal.ReadWrite)
 
+	prometheus.ReadWiriteChangeState.Inc()
+
 	returnBody, err := msgpack.Marshal(nil)
 
 	if err != nil {
@@ -82,6 +87,8 @@ func ADM_STORAGE_SWITCH_MAINTENANCE(iprotoserver *IprotoServer, body []byte) ([]
 	}
 
 	iprotoserver.usecase.ChangeState(internal.Maintenance)
+
+	prometheus.MaintenanceChangeState.Inc()
 
 	returnBody, err := msgpack.Marshal(nil)
 
