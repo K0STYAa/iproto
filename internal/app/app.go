@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/rpc"
 	"sync"
+	"time"
 
 	"github.com/K0STYAa/vk_iproto/internal"
 	"github.com/K0STYAa/vk_iproto/internal/iproto_server"
@@ -27,6 +28,7 @@ const (
 	burstLimit     = 10000
 	maxConnections = 100
 	errTemplate    = "%w"
+	connTimeout    = 30 * time.Second
 )
 
 func (ms *MyService) MainHandler(req iproto.Request, reply *iproto.Response) error {
@@ -41,10 +43,8 @@ func (ms *MyService) MainHandler(req iproto.Request, reply *iproto.Response) err
 
 func Run() {
 	rateLimiter := rate.NewLimiter(rpsLimit, burstLimit)
-
 	// Set up a counting semaphore to limit the number of connections to 100.
 	semaphore := make(chan struct{}, maxConnections)
-
 	// Set up a wait group to keep track of active connections.
 	var waitGroup sync.WaitGroup
 
@@ -60,7 +60,6 @@ func Run() {
 	if err != nil {
 		logrus.Fatal("Register Service error: ", err)
 	}
-
 	// Creating a listener on a local machine on port 8080
 	listener, err := net.Listen("tcp", ":8080") //#nosec  G102 -- This is a false positive
 	if err != nil {
@@ -74,7 +73,6 @@ func Run() {
 	}()
 
 	logrus.Info("The server is running, listening to port 8080...")
-
 	// Infinite loop for processing incoming connections
 	for {
 		conn, err := listener.Accept()
@@ -83,9 +81,8 @@ func Run() {
 		}
 
 		prometheus.ConnectionsCount.Inc()
-		// Acquire a slot in the semaphore.
 		semaphore <- struct{}{}
-		// Add the connection to the wait group.
+
 		waitGroup.Add(1)
 		// Serve the connection in a separate goroutine.
 		go func() {
@@ -93,7 +90,13 @@ func Run() {
 				// Release the slot in the semaphore and mark the connection as done.
 				<-semaphore
 				waitGroup.Done()
+				prometheus.ConnectionsCount.Dec()
+				conn.Close()
 			}()
+			// Add connection timeout
+			if err := conn.SetReadDeadline(time.Now().Add(connTimeout)); err != nil {
+				logrus.Error("Connection closed: ", err)
+			}
 
 			rpc.ServeConn(conn)
 		}()

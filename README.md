@@ -51,6 +51,8 @@ https://github.com/msgpack/msgpack/blob/master/spec.md
 - FATAL
 - PANIC
 
+### Connection timeout = 30 sec
+
 ## Набор метрик:
 ### Встроенные в prometheus метрики:
 1. Мониторинг горутин: количество запущенных горутин (go_goroutines)
@@ -59,7 +61,7 @@ https://github.com/msgpack/msgpack/blob/master/spec.md
 3. Метрики профилирования: количество успешно отработанных запросов для чтения/записи (storage_successful_reads_total, storage_successful_writes_total)
 4. Метрики стабильности: количество ошибок и сбоев для чтения/записи (storage_error_reads_total, storage_error_writes_total)
 5. Метрики распределения запросов: распределение запросов по эндпоинтам (storage_reads_total, storage_writes_total, change_storage_state_on_read_write_total, change_storage_state_on_read_only_total, change_storage_state_on_maintenance_total)
-6. Метрики количества подключений (connections_total)
+6. Метрики количества подключений (active_connections)
 
 P.S. Я считаю подсчет изменений состояния отдельно для ReadOnly, ReadWrite, Maintenance, т.к. в случае реализации метрики как флага состояния, если между сборами prometheus при больших значениях скраппинг интервала в API состояние изменилось и потом вернулось обратно, то prometheus не зафиксирует изменение состояния.
 

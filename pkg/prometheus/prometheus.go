@@ -14,8 +14,8 @@ const (
 )
 
 var (
-	ConnectionsCount = prometheus.NewCounter(prometheus.CounterOpts{ //nolint: lll,exhaustivestruct,exhaustruct,gochecknoglobals
-		Name: "connections_total",
+	ConnectionsCount = prometheus.NewGauge(prometheus.GaugeOpts{ //nolint: lll,exhaustivestruct,exhaustruct,gochecknoglobals
+		Name: "active_connections",
 		Help: "Total number of connections",
 	})
 
