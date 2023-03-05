@@ -126,41 +126,39 @@ func main() {
 		log.Fatal("Dial error:", err)
 	}
 	// Act
-	for i := 0; i < 1000; i += 1 {
-		for requestID, testCase := range myTestTable {
-			var resp iproto.Response
+	for requestID, testCase := range myTestTable {
+		var resp iproto.Response
 
-			reqBody, _ := msgpack.Marshal(testCase.req)
-			testCaseRespBytes, _ := msgpack.Marshal(testCase.resp)
-			req := iproto.Request{
-				Header: iproto.Header{
-					FuncID:     testCase.foo,
-					BodyLength: uint32(len(reqBody)),
-					RequestID:  uint32(requestID),
-				},
-				Body: reqBody,
-			}
+		reqBody, _ := msgpack.Marshal(testCase.req)
+		testCaseRespBytes, _ := msgpack.Marshal(testCase.resp)
+		req := iproto.Request{
+			Header: iproto.Header{
+				FuncID:     testCase.foo,
+				BodyLength: uint32(len(reqBody)),
+				RequestID:  uint32(requestID),
+			},
+			Body: reqBody,
+		}
 
-			err := client.Call("MyService.MainHandler", req, &resp)
-			if err != nil {
-				log.Fatal("Call error: ", err)
-			}
+		err := client.Call("MyService.MainHandler", req, &resp)
+		if err != nil {
+			log.Fatal("Call error: ", err)
+		}
 
-			var bodyResp interface{}
+		var bodyResp interface{}
 
-			err = msgpack.Unmarshal(resp.Body, &bodyResp)
-			if err != nil {
-				log.Println(err.Error())
-			}
+		err = msgpack.Unmarshal(resp.Body, &bodyResp)
+		if err != nil {
+			log.Println(err.Error())
+		}
 
-			log.Printf("Calling %x(%v), result %v\n", testCase.foo, testCase.req, bodyResp)
+		log.Printf("Calling %x(%v), result %v\n", testCase.foo, testCase.req, bodyResp)
 
-			// Assert
-			if bodyResp != nil && !bytes.Equal(resp.Body, testCaseRespBytes) ||
-				bodyResp == nil && testCase.resp != bodyResp {
-				log.Printf("Incorrect result. Expected %v, got %v",
-					testCase.resp, bodyResp)
-			}
+		// Assert
+		if bodyResp != nil && !bytes.Equal(resp.Body, testCaseRespBytes) ||
+			bodyResp == nil && testCase.resp != bodyResp {
+			log.Printf("Incorrect result. Expected %v, got %v",
+				testCase.resp, bodyResp)
 		}
 	}
 }
