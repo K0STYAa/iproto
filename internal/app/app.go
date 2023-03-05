@@ -41,7 +41,7 @@ func (ms *MyService) MainHandler(req iproto.Request, reply *iproto.Response) err
 	return nil
 }
 
-func Run() {
+func Run() { //nolint: funlen
 	rateLimiter := rate.NewLimiter(rpsLimit, burstLimit)
 	// Set up a counting semaphore to limit the number of connections to 100.
 	semaphore := make(chan struct{}, maxConnections)
@@ -91,7 +91,10 @@ func Run() {
 				<-semaphore
 				waitGroup.Done()
 				prometheus.ConnectionsCount.Dec()
-				conn.Close()
+
+				if err := conn.Close(); err != nil{
+					logrus.Error("Cant close connection: ", err)
+				}
 			}()
 			// Add connection timeout
 			if err := conn.SetReadDeadline(time.Now().Add(connTimeout)); err != nil {
