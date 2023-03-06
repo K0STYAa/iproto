@@ -28,7 +28,7 @@ const (
 	burstLimit     = 10000
 	maxConnections = 100
 	errTemplate    = "%w"
-	connTimeout    = 30 * time.Second
+	connTimeout    = 20 * time.Second
 )
 
 func (ms *MyService) MainHandler(req iproto.Request, reply *iproto.Response) error {
@@ -36,12 +36,15 @@ func (ms *MyService) MainHandler(req iproto.Request, reply *iproto.Response) err
 		return fmt.Errorf(errTemplate, err)
 	}
 
+	start := time.Now()
+	defer prometheus.Latency.Observe(time.Since(start).Seconds())
+
 	*reply = ms.iprotoserver.MainHandler(req)
 
 	return nil
 }
 
-func Run() { //nolint: funlen
+func Run() {
 	rateLimiter := rate.NewLimiter(rpsLimit, burstLimit)
 	// Set up a counting semaphore to limit the number of connections to 100.
 	semaphore := make(chan struct{}, maxConnections)
@@ -91,10 +94,6 @@ func Run() { //nolint: funlen
 				<-semaphore
 				waitGroup.Done()
 				prometheus.ConnectionsCount.Dec()
-
-				if err := conn.Close(); err != nil{
-					logrus.Error("Cant close connection: ", err)
-				}
 			}()
 			// Add connection timeout
 			if err := conn.SetReadDeadline(time.Now().Add(connTimeout)); err != nil {

@@ -11,6 +11,9 @@ import (
 
 const (
 	timeoutSec = 3
+	latencyStart = 0.001
+	latencyWidth = 0.001
+	latencyCount = 10
 )
 
 var (
@@ -63,6 +66,12 @@ var (
 		Name: "storage_error_writes_total",
 		Help: "Total number of errors at storage writes",
 	})
+
+	Latency = prometheus.NewHistogram(prometheus.HistogramOpts{ //nolint: exhaustivestruct,exhaustruct,gochecknoglobals
+		Name:    "RPC_request_duration_seconds",
+		Help:    "Histogram of RPC request latencies",
+		Buckets: prometheus.LinearBuckets(latencyStart, latencyWidth, latencyCount),
+	})
 )
 
 func InitPrometheus() {
@@ -76,6 +85,7 @@ func InitPrometheus() {
 	prometheus.MustRegister(ReadOnlyChangeState)
 	prometheus.MustRegister(MaintenanceChangeState)
 	prometheus.MustRegister(ConnectionsCount)
+	prometheus.MustRegister(Latency)
 
 	http.Handle("/metrics", promhttp.Handler())
 
