@@ -51,7 +51,7 @@ https://github.com/msgpack/msgpack/blob/master/spec.md
 - FATAL
 - PANIC
 
-### Connection timeout = 30 sec
+### Connection timeout = 15 sec
 
 ## Набор метрик:
 ### Встроенные в prometheus метрики:

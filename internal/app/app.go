@@ -26,7 +26,7 @@ const (
 	burstLimit     = 10000
 	maxConnections = 100
 	errTemplate    = "%w"
-	connTimeout    = 20 * time.Second
+	connTimeout    = 15 * time.Second
 )
 
 func (ms *MyService) MainHandler(req iproto.Request, reply *iproto.Response) error {
