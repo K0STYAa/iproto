@@ -1,18 +1,18 @@
 package iprotoserver
 
 import (
-	"github.com/K0STYAa/vk_iproto/internal/usecase"
-	"github.com/K0STYAa/vk_iproto/pkg/iproto"
+	"github.com/K0STYAa/iproto/internal/storage"
+	"github.com/K0STYAa/iproto/pkg/iproto"
 	"github.com/sirupsen/logrus"
 	"github.com/vmihailenco/msgpack/v5"
 )
 
 type IprotoServer struct {
-	usecase *usecase.Usecase
+	storage *storage.Storage
 }
 
-func NewIprotoServer(usecase usecase.Usecase) *IprotoServer {
-	return &IprotoServer{usecase: &usecase}
+func NewIprotoServer(storage storage.Storage) *IprotoServer {
+	return &IprotoServer{storage: &storage}
 }
 
 func (d *IprotoServer) MainHandler(req iproto.Request) iproto.Response {

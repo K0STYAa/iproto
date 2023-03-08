@@ -3,15 +3,15 @@ package storage
 import (
 	"errors"
 
-	"github.com/K0STYAa/vk_iproto/internal"
-	"github.com/K0STYAa/vk_iproto/pkg/iproto"
+	"github.com/K0STYAa/iproto/internal"
+	"github.com/K0STYAa/iproto/pkg/iproto"
 )
 
 type ReadWriteStorage struct {
-	storage *internal.BaseStorage
+	storage *BaseStorage
 }
 
-func NewReadWriteStorage(storage *internal.BaseStorage) *ReadWriteStorage {
+func NewReadWriteStorage(storage *BaseStorage) *ReadWriteStorage {
 	return &ReadWriteStorage{storage: storage}
 }
 
@@ -24,11 +24,11 @@ var (
 )
 
 func (s *ReadWriteStorage) Read(reqReadArgs iproto.ReqReadArgs) (iproto.RespReadArgs, error) {
-	if s.storage.StorageState == internal.Maintenance {
+	if s.storage.StorageState == internal.StorageStateMaintenance {
 		return iproto.RespReadArgs{S: ""}, ErrReadMaintenanceMode
 	}
 
-	if reqReadArgs.ID < internal.FirstDataID || reqReadArgs.ID > internal.StorageDataLen-1 {
+	if reqReadArgs.ID < firstDataID || reqReadArgs.ID > storageDataLen-1 {
 		return iproto.RespReadArgs{S: ""}, ErrInvalidID
 	}
 
@@ -39,19 +39,19 @@ func (s *ReadWriteStorage) Read(reqReadArgs iproto.ReqReadArgs) (iproto.RespRead
 }
 
 func (s *ReadWriteStorage) Replace(reqReplaceArgs iproto.ReqReplaceArgs) (iproto.RespReplaceArgs, error) {
-	if s.storage.StorageState == internal.Maintenance {
+	if s.storage.StorageState == internal.StorageStateMaintenance {
 		return iproto.RespReplaceArgs{}, ErrReplaceMaintenanceMode
 	}
 
-	if s.storage.StorageState == internal.ReadOnly {
+	if s.storage.StorageState == internal.StorageStateReadOnly {
 		return iproto.RespReplaceArgs{}, ErrReplaceReadOnlyMode
 	}
 
-	if len(reqReplaceArgs.S) > internal.StringMaxLen {
+	if len(reqReplaceArgs.S) > stringMaxLen {
 		return iproto.RespReplaceArgs{}, ErrBigString
 	}
 
-	if reqReplaceArgs.ID < internal.FirstDataID || reqReplaceArgs.ID > internal.StorageDataLen-1 {
+	if reqReplaceArgs.ID < firstDataID || reqReplaceArgs.ID > storageDataLen-1 {
 		return iproto.RespReplaceArgs{}, ErrInvalidID
 	}
 

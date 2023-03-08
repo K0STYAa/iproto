@@ -1,5 +1,5 @@
-# RPC API VK iproto
-[![golang-pipeline](https://github.com/K0STYAa/vk_iproto/actions/workflows/push.yml/badge.svg?branch=main)](https://github.com/K0STYAa/vk_iproto/actions/workflows/push.yml)
+# RPC API iproto
+[![golang-pipeline](https://github.com/K0STYAa/iproto/actions/workflows/push.yml/badge.svg?branch=main)](https://github.com/K0STYAa/iproto/actions/workflows/push.yml)
 
 Реализован `iproto`-сервер, который осуществляет операции над стораджем.
 
@@ -70,8 +70,8 @@ P.S. Я считаю подсчет изменений состояния отд
 ## Для запуска сервера:
 Build image and run container:
 ```
-docker build -t vk_iproto .
-docker run -p 80:8080 -e "LOG_LEVEL=<LOG_LEVEL>" vk_iproto
+docker build -t iproto .
+docker run -p 80:8080 -e "LOG_LEVEL=<LOG_LEVEL>" iproto
 ```
 Or pull image from docker hub and than run:
 ```

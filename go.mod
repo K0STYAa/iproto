@@ -1,4 +1,4 @@
-module github.com/K0STYAa/vk_iproto
+module github.com/K0STYAa/iproto
 
 go 1.20
 

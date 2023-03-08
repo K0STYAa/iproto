@@ -1,14 +1,10 @@
 package storage
 
-import (
-	"github.com/K0STYAa/vk_iproto/internal"
-)
-
 type StateStorage struct {
-	storage *internal.BaseStorage
+	storage *BaseStorage
 }
 
-func NewStateStorage(storage *internal.BaseStorage) *StateStorage {
+func NewStateStorage(storage *BaseStorage) *StateStorage {
 	return &StateStorage{storage: storage}
 }
 

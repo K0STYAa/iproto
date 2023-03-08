@@ -3,8 +3,8 @@ package iprotoserver
 import (
 	"fmt"
 
-	"github.com/K0STYAa/vk_iproto/pkg/iproto"
-	"github.com/K0STYAa/vk_iproto/pkg/prometheus"
+	"github.com/K0STYAa/iproto/pkg/iproto"
+	"github.com/K0STYAa/iproto/pkg/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/vmihailenco/msgpack/v5"
 )
@@ -22,7 +22,7 @@ func STORAGE_READ(iprotoserver *IprotoServer, body []byte) ([]byte, error) { //n
 
 	prometheus.StorageReads.Inc()
 
-	resp, err := iprotoserver.usecase.Read(req)
+	resp, err := iprotoserver.storage.Read(req)
 	if err != nil {
 		prometheus.ErrorStorageReads.Inc()
 
@@ -52,7 +52,7 @@ func STORAGE_REPLACE(iprotoserver *IprotoServer, body []byte) ([]byte, error) { 
 
 	prometheus.StorageWrites.Inc()
 
-	resp, err := iprotoserver.usecase.Replace(req)
+	resp, err := iprotoserver.storage.Replace(req)
 	if err != nil {
 		prometheus.ErrorStorageWrites.Inc()
 

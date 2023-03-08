@@ -1,9 +1,6 @@
 package storage
 
-import (
-	"github.com/K0STYAa/vk_iproto/internal"
-	"github.com/K0STYAa/vk_iproto/pkg/iproto"
-)
+import "github.com/K0STYAa/iproto/pkg/iproto"
 
 type State interface {
 	ChangeState(stateID uint8)
@@ -14,13 +11,13 @@ type ReadWrite interface {
 	Replace(ReqReplaceArgs iproto.ReqReplaceArgs) (iproto.RespReplaceArgs, error)
 }
 
-type Repository struct {
+type Storage struct {
 	State
 	ReadWrite
 }
 
-func NewRepository(storage *internal.BaseStorage) *Repository {
-	return &Repository{
+func NewStorage(storage *BaseStorage) *Storage {
+	return &Storage{
 		State:     NewStateStorage(storage),
 		ReadWrite: NewReadWriteStorage(storage),
 	}

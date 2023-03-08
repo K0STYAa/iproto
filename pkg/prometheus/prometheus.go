@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	timeoutSec = 3
+	timeoutSec   = 3
 	latencyStart = 0.001
 	latencyWidth = 0.001
 	latencyCount = 10

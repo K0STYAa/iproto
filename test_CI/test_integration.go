@@ -6,7 +6,7 @@ import (
 	"net/rpc"
 	"strings"
 
-	"github.com/K0STYAa/vk_iproto/pkg/iproto"
+	"github.com/K0STYAa/iproto/pkg/iproto"
 	"github.com/vmihailenco/msgpack/v5"
 )
 

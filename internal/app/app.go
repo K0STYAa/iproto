@@ -8,12 +8,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/K0STYAa/vk_iproto/internal"
-	"github.com/K0STYAa/vk_iproto/internal/iproto_server"
-	"github.com/K0STYAa/vk_iproto/internal/storage"
-	"github.com/K0STYAa/vk_iproto/internal/usecase"
-	"github.com/K0STYAa/vk_iproto/pkg/iproto"
-	"github.com/K0STYAa/vk_iproto/pkg/prometheus"
+	"github.com/K0STYAa/iproto/internal/iproto_server"
+	"github.com/K0STYAa/iproto/internal/storage"
+	"github.com/K0STYAa/iproto/pkg/iproto"
+	"github.com/K0STYAa/iproto/pkg/prometheus"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/time/rate"
 )
@@ -53,10 +51,9 @@ func Run() {
 
 	go prometheus.InitPrometheus()
 
-	myStorage := new(internal.BaseStorage)
-	repos := storage.NewRepository(myStorage)
-	usecase := usecase.NewUsecase(repos)
-	iprotoserver := iprotoserver.NewIprotoServer(*usecase)
+	myStorage := new(storage.BaseStorage)
+	repos := storage.NewStorage(myStorage)
+	iprotoserver := iprotoserver.NewIprotoServer(*repos)
 	myService := &MyService{iprotoserver: iprotoserver, rateLimiter: rateLimiter}
 
 	err := rpc.Register(myService)

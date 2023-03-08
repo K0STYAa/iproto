@@ -3,8 +3,8 @@ package main
 import (
 	"runtime"
 
-	"github.com/K0STYAa/vk_iproto/internal/app"
-	"github.com/K0STYAa/vk_iproto/pkg/logger"
+	"github.com/K0STYAa/iproto/internal/app"
+	"github.com/K0STYAa/iproto/pkg/logger"
 )
 
 const (
