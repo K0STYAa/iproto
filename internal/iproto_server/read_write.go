@@ -20,16 +20,16 @@ func STORAGE_READ(iprotoserver *IprotoServer, body []byte) ([]byte, error) { //n
 	// LOG REQUEST
 	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_READ(%v)", req))
 
-	prometheus.StorageReads.Inc()
+	prometheus.ApiCall.WithLabelValues("STORAGE_READ").Inc()
 
 	resp, err := iprotoserver.storage.Read(req)
 	if err != nil {
-		prometheus.ErrorStorageReads.Inc()
+		prometheus.ErrorStorageReadsWrites.WithLabelValues("read").Inc()
 
 		return nil, fmt.Errorf(errTemplate, err)
 	}
 
-	prometheus.SuccessfulStorageReads.Inc() // increment the storageReads metric
+	prometheus.SuccessfulStorageReadsWrites.WithLabelValues("read").Inc()
 
 	responseByte, err := msgpack.Marshal(resp)
 	if err != nil {
@@ -50,16 +50,16 @@ func STORAGE_REPLACE(iprotoserver *IprotoServer, body []byte) ([]byte, error) { 
 	// LOG REQUEST
 	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_REPLACE(%v)", req))
 
-	prometheus.StorageWrites.Inc()
+	prometheus.ApiCall.WithLabelValues("STORAGE_REPLACE").Inc()
 
 	resp, err := iprotoserver.storage.Replace(req)
 	if err != nil {
-		prometheus.ErrorStorageWrites.Inc()
+		prometheus.ErrorStorageReadsWrites.WithLabelValues("write").Inc()
 
 		return nil, fmt.Errorf(errTemplate, err)
 	}
 
-	prometheus.SuccessfulStorageWrites.Inc() // increment the storageWrites metric
+	prometheus.SuccessfulStorageReadsWrites.WithLabelValues("write").Inc()
 
 	responseByte, err := msgpack.Marshal(resp)
 	if err != nil {

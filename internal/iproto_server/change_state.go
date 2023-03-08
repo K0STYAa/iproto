@@ -34,7 +34,7 @@ func ADM_STORAGE_SWITCH_READONLY(iprotoserver *IprotoServer, body []byte) ([]byt
 
 	iprotoserver.storage.ChangeState(internal.StorageStateReadOnly)
 
-	prometheus.ReadOnlyChangeState.Inc()
+	prometheus.ApiCall.WithLabelValues("ADM_STORAGE_SWITCH_READONLY").Inc()
 
 	returnBody, err := msgpack.Marshal(nil)
 
@@ -61,7 +61,7 @@ func ADM_STORAGE_SWITCH_READWRITE(iprotoserver *IprotoServer, body []byte) ([]by
 
 	iprotoserver.storage.ChangeState(internal.StorageStateReadWrite)
 
-	prometheus.ReadWiriteChangeState.Inc()
+	prometheus.ApiCall.WithLabelValues("ADM_STORAGE_SWITCH_READWRITE").Inc()
 
 	returnBody, err := msgpack.Marshal(nil)
 
@@ -88,7 +88,7 @@ func ADM_STORAGE_SWITCH_MAINTENANCE(iprotoserver *IprotoServer, body []byte) ([]
 
 	iprotoserver.storage.ChangeState(internal.StorageStateMaintenance)
 
-	prometheus.MaintenanceChangeState.Inc()
+	prometheus.ApiCall.WithLabelValues("ADM_STORAGE_SWITCH_MAINTENANCE").Inc()
 
 	returnBody, err := msgpack.Marshal(nil)
 
