@@ -17,19 +17,19 @@ const (
 )
 
 var (
-	ConnectionsCount = prometheus.NewGauge(//nolint: gochecknoglobals
+	ConnectionsCount = prometheus.NewGauge( //nolint: gochecknoglobals
 		prometheus.GaugeOpts{ //nolint: exhaustivestruct,exhaustruct
 			Name: "active_connections",
 			Help: "Total number of connections",
 		},
 	)
 
-	ApiCall = prometheus.NewCounterVec( //nolint: exhaustivestruct,exhaustruct,gochecknoglobals
-		prometheus.CounterOpts{
+	APICall = prometheus.NewCounterVec( //nolint: gochecknoglobals
+		prometheus.CounterOpts{ //nolint: exhaustivestruct,exhaustruct
 			Name: "api_call_total",
 			Help: "Total number of api calls by methods",
 		},
-        []string{"method"},
+		[]string{"method"},
 	)
 
 	SuccessfulStorageReadsWrites = prometheus.NewCounterVec( //nolint: gochecknoglobals
@@ -37,7 +37,7 @@ var (
 			Name: "storage_successful_reads_writes_total",
 			Help: "Total number of successful storage reads and writes",
 		},
-        []string{"action"},
+		[]string{"action"},
 	)
 
 	ErrorStorageReadsWrites = prometheus.NewCounterVec( //nolint: gochecknoglobals
@@ -45,7 +45,7 @@ var (
 			Name: "storage_error_reads_writes_total",
 			Help: "Total number of errors at storage reads and writes",
 		},
-        []string{"action"},
+		[]string{"action"},
 	)
 
 	Latency = prometheus.NewHistogram( //nolint: gochecknoglobals
@@ -58,7 +58,7 @@ var (
 )
 
 func InitPrometheus() {
-	prometheus.MustRegister(ApiCall)
+	prometheus.MustRegister(APICall)
 	prometheus.MustRegister(SuccessfulStorageReadsWrites)
 	prometheus.MustRegister(ErrorStorageReadsWrites)
 	prometheus.MustRegister(ConnectionsCount)

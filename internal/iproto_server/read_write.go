@@ -20,7 +20,7 @@ func STORAGE_READ(iprotoserver *IprotoServer, body []byte) ([]byte, error) { //n
 	// LOG REQUEST
 	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_READ(%v)", req))
 
-	prometheus.ApiCall.WithLabelValues("STORAGE_READ").Inc()
+	prometheus.APICall.WithLabelValues("STORAGE_READ").Inc()
 
 	resp, err := iprotoserver.storage.Read(req)
 	if err != nil {
@@ -50,7 +50,7 @@ func STORAGE_REPLACE(iprotoserver *IprotoServer, body []byte) ([]byte, error) { 
 	// LOG REQUEST
 	logrus.Info(fmt.Sprintf("[REQUEST]: STORAGE_REPLACE(%v)", req))
 
-	prometheus.ApiCall.WithLabelValues("STORAGE_REPLACE").Inc()
+	prometheus.APICall.WithLabelValues("STORAGE_REPLACE").Inc()
 
 	resp, err := iprotoserver.storage.Replace(req)
 	if err != nil {
